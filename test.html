@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Memories</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            font-family: 'Pacifico', cursive;
+            cursor: none;
+        }
+
+        .title {
+            position: fixed;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 2.5em;
+            z-index: 1000;
+        }
+
+        .polaroid {
+            position: absolute;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 180px;
+            background: white;
+            border: 2px solid #fff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            opacity: 0;
+            transform-origin: center;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 6px;
+            filter: sepia(0.2) brightness(1.05);
+        }
+
+        .polaroid span {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #e91e63;
+            font-weight: bold;
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .music-player {
+            position: fixed;
+            width: 280px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            backdrop-filter: blur(5px);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .music-player h3 {
+            margin: 0 0 15px 0;
+            font-size: 24px;
+            color: #e91e63;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        audio {
+            width: 100%;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -52%); }
+            50% { transform: translate(-50%, -48%); }
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff4081;
+            font-size: 16px;
+            animation: heartFloat 2s ease-out forwards;
+        }
+
+        @keyframes heartFloat {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1 class="title">Our Happy Moments 💖</h1>
+    
+    <div class="music-player">
+        <h3>Our Song 🎵</h3>
+        <audio controls autoplay loop>
+            <source src="Music/blue (Official Music Video).mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <script>
+        const images = [
+            { src: 'photos/IMG_2024-05-13-11-14-15-566.jpg', caption: 'First Date 💕' },
+            { src: 'photos/IMG_20240513_095500_703.jpg', caption: 'Morning Smile ☀️' },
+            { src: 'photos/IMG_20240517_112357_405.jpg', caption: 'Laughing Together 😄' },
+            { src: 'photos/IMG_20240517_112402_681.jpg', caption: 'Sweet Moments 🍬' },
+            { src: 'photos/IMG_20240520_162446_784.jpg', caption: 'Adventure Time 🌟' },
+            { src: 'photos/IMG_20240603_110839_154.jpg', caption: 'Perfect Day 🌈' },
+            { src: 'photos/IMG_20240603_120646_0.jpg', caption: 'Your Beautiful Eyes 👀' },
+            { src: 'photos/IMG_20240603_132518_867.jpg', caption: 'Forever Yours 💍' }
+        ];
+
+        let lastImageTime = 0;
+        const imageInterval = 250;
+        let rotation = -5;
+
+        const createPolaroidElement = (src, x, y, caption) => {
+            const polaroid = document.createElement('div');
+            polaroid.classList.add('polaroid');
+            
+            // Random rotation and position offset
+            const angle = rotation = (rotation + 10) % 15 - 7;
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 40;
+
+            polaroid.style.left = `${x + offsetX}px`;
+            polaroid.style.top = `${y + offsetY}px`;
+            polaroid.style.transform = `rotate(${angle}deg)`;
+
+            const img = new Image();
+            img.src = src;
+            img.onload = () => {
+                polaroid.innerHTML = `
+                    ${img.outerHTML}
+                    <span>${caption}</span>
+                `;
+            };
+
+            document.body.appendChild(polaroid);
+
+            // Animation
+            requestAnimationFrame(() => {
+                polaroid.style.opacity = '1';
+            });
+
+            setTimeout(() => {
+                polaroid.style.opacity = '0';
+                polaroid.style.transform = `rotate(${angle}deg) translateY(-50px)`;
+                setTimeout(() => polaroid.remove(), 500);
+            }, 4000);
+
+            // Create floating heart
+            if(Math.random() > 0.8) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 2000);
+            }
+        };
+
+        document.addEventListener('mousemove', (e) => {
+            if (Date.now() - lastImageTime > imageInterval) {
+                const { src, caption } = images[Math.floor(Math.random() * images.length)];
+                createPolaroidElement(src, e.pageX, e.pageY, caption);
+                lastImageTime = Date.now();
+            }
+        });
+
+        // Add initial hearts animation
+        setInterval(() => {
+            if(Math.random() > 0.7) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                heart.style.left = `${Math.random() * window.innerWidth}px`;
+                heart.style.top = `${window.innerHeight + 50}px`;
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 2000);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
